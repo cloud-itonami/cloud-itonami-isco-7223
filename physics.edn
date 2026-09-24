@@ -1,0 +1,34 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a workshop scheduling/logistics coordination
+;; robot for metal-working machine tool setters and operators (ISCO 7223)
+;; schedules the crew, logs tasks, batches, materials usage and progress,
+;; and coordinates tooling-materials supply orders; it never sets up or
+;; operates a machine tool. Its physical work is batch logistics: staging bar
+;; blanks at the machine's load station, and keeping the coolant supply line
+;; it orders parts for able to deliver the flow the job sheet calls for.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-7223"
+ :cases
+ [{:id :blank-to-load-station
+   :kind :manipulator
+   :procedure "arm takes a steel bar blank from the batch cart and sets it in the V-block of the lathe's load station, level with the spindle"
+   :params {:l1-m 0.65 :l2-m 0.55 :m1-kg 10.0 :m2-kg 7.0
+            :from [0.70 0.10] :to [0.85 0.60] :duration-s 2.0 :steps 400}
+   :sweep {:param :payload-kg :values [2.0 5.0 10.0 15.0 25.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 180.0 :basis "estimate: continuous shoulder torque of a ~12-15 kg-payload collaborative arm class"}
+   :boundary {:lo 0.5 :hi 80.0}}
+  {:id :coolant-supply-line
+   :kind :pipe-flow
+   :procedure "water-miscible coolant is pumped from the machine sump through 6 m of 12 mm bore line to the tool nozzles; the flow the job calls for is swept"
+   :params {:diameter-m 0.012 :length-m 6.0 :roughness-m 1.5e-6 :elevation-m 1.2
+            :density-kg-m3 1000.0 :viscosity-pa-s 1.5e-3 :pump-efficiency 0.45}
+   :sweep {:param :q-m3s :values [0.00010 0.00020 0.00030 0.00040 0.00060]}
+   :quantity :pressure-drop-pa
+   :limit {:max 150000.0 :basis "estimate: share of a low-pressure flood-coolant pump's head left for the supply line after the nozzles"}
+   :boundary {:lo 0.00005 :hi 0.001}}]}
