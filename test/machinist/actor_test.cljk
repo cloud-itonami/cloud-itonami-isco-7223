@@ -1,5 +1,5 @@
 (ns machinist.actor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [machinist.actor :as actor]
             [machinist.store :as store]))
 
