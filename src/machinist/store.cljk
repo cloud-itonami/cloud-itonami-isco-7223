@@ -1,6 +1,6 @@
 (ns machinist.store
   "SSoT for the ISCO-08 7223 metal working machine tool coordination
-  actor (itonami actor pattern, ADR-2607121000 / CLAUDE.md Actors
+  actor (itonami actor pattern, ADR-2607121000 / AGENTS.md Actors
   section; README's 'Robotics premise' — a workshop
   scheduling/logistics coordination robot performs crew scheduling,
   task/batch/materials-usage/progress-record logging and
